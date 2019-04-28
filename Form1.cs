@@ -14,16 +14,16 @@ using static System.Math;
 
 namespace OrbitalApp
 {
-    /* ELLIPTIC ORBITAL PARAMETER APP
-     * Given user inputs 
-     * 
-     
-         */
-
-
 
     public partial class Form1 : Form
     {
+        /* Uses three dictionaries for each variable:
+         * d_textbox maps the variable to its input/output textbox on the app.
+         * d maps the variable to its value.
+         * d_status stores whether each variable is currently known or not 
+         *      (to decide when formulae can be applied)
+         * */
+
         static Dictionary<string, TextBox> d_textbox;
         static Dictionary<string, double> d;
         static Dictionary<string, bool> d_status;
@@ -36,27 +36,31 @@ namespace OrbitalApp
 
         private void CreateDictionaries()
         {
+            //initialises the dictionaries with all the textbox names,
+            //with values of 0 and unknown status for all variables.
+
+
             d = new Dictionary<string, double>();
             d_textbox = new Dictionary<string, TextBox>();
             d_status = new Dictionary<string, bool>();
 
-            d_textbox.Add("a", textbox_a);
-            d_textbox.Add("b", textbox_b);
-            d_textbox.Add("e", textbox_e);
-            d_textbox.Add("p", textbox_p);
-            d_textbox.Add("r_a", textbox_r_a);
-            d_textbox.Add("r_p", textbox_r_p);
-            d_textbox.Add("r", textbox_r);
-            d_textbox.Add("theta", textbox_theta);
-            d_textbox.Add("v", textbox_v);
-            d_textbox.Add("h", textbox_h);
-            d_textbox.Add("mu", textbox_mu);
-            d_textbox.Add("eps", textbox_eps);
-            d_textbox.Add("T", textbox_T);
-            d_textbox.Add("M_e", textbox_M_e);
-            d_textbox.Add("E", textbox_E2);
-
-            //true means active, false means inactive
+            {
+                d_textbox.Add("a", textbox_a);
+                d_textbox.Add("b", textbox_b);
+                d_textbox.Add("e", textbox_e);
+                d_textbox.Add("p", textbox_p);
+                d_textbox.Add("r_a", textbox_r_a);
+                d_textbox.Add("r_p", textbox_r_p);
+                d_textbox.Add("r", textbox_r);
+                d_textbox.Add("theta", textbox_theta);
+                d_textbox.Add("v", textbox_v);
+                d_textbox.Add("h", textbox_h);
+                d_textbox.Add("mu", textbox_mu);
+                d_textbox.Add("eps", textbox_eps);
+                d_textbox.Add("T", textbox_T);
+                d_textbox.Add("M_e", textbox_M_e);
+                d_textbox.Add("E", textbox_E2);
+            }
 
             foreach(var item in d_textbox)
             {
@@ -68,6 +72,8 @@ namespace OrbitalApp
 
         private void UpdateDictionaries()
         {
+            //Called after the user presses the "Go" button, and
+            //updates the dictionaries to reflect the current user input.
             foreach(var item in d_textbox)
             {
                 if(item.Value.Text == "")
@@ -84,6 +90,8 @@ namespace OrbitalApp
 
         private void ChangeValue(string parameter, double value)
         {
+            //Changes the dictionaries to reflect a formula application. If
+            // this doesn't match the user input, a consistency error is raised
             if (d_textbox[parameter].Text == "")
             {
                 d_status[parameter] = true;
@@ -97,6 +105,7 @@ namespace OrbitalApp
 
         private void UpdateScreen()
         {
+            //Updates the screen to match a change in the dictionaries.
             foreach(var item in d_textbox)
             {
                 if (d_status[item.Key])
@@ -108,6 +117,9 @@ namespace OrbitalApp
 
         private void Evaluate()
         {
+            //For each parameter, iterates through the formulae it to the rest,
+            //  and updates it if there's enough info.
+
             //a
             {
                 if (d_status["r_a"] & d_status["r_p"])
@@ -249,6 +261,7 @@ namespace OrbitalApp
 
         private void ClearButton_Click(object sender, EventArgs e)
         {
+            //Clears the input
             foreach(var item in d_textbox)
             {
                 item.Value.Text = "";
@@ -258,6 +271,10 @@ namespace OrbitalApp
 
         private void GoButton_Click(object sender, EventArgs e)
         {
+            //Iterates through the evaluation procedure a couple of times, to make
+            //  sure all parameters which can be found have been. If no consistency 
+            //  errors have been raised, the screen is updated with results.
+
             consistent_system = true;
             inconsistent_label.Visible = false;
 
@@ -279,6 +296,16 @@ namespace OrbitalApp
         private void Form1_Load(object sender, EventArgs e)
         {
             CreateDictionaries();
+        }
+
+        private void textbox_h_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label18_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
